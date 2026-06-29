@@ -115,11 +115,11 @@ export default function Directions() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Update destination marker + (if possible) refresh route/polyline + fit bounds
+  // Update destination marker (no scrolling here to avoid racing layout/route rendering)
   useEffect(() => {
     if (!mapRef.current) return
 
-    // 1) Update destination marker
+    // Update destination marker
     if (destMarkerRef.current) {
       destMarkerRef.current.remove()
       destMarkerRef.current = null
@@ -132,20 +132,24 @@ export default function Directions() {
 
     // Ensure Leaflet knows container dimensions after the destination change / layout shifts
     mapRef.current.invalidateSize()
+  }, [destLat, destLon, destName])
 
-    // 2) Smoothly bring map into view on mobile/tablet (Issue 1)
-    if (isMobileOrTablet) {
-      // Run after DOM paint + CSS layout stabilization
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        }, 50)
-      })
-    }
+  // Issue 1: on mobile/tablet, bring map into view AFTER route render so it is visible immediately.
+  useEffect(() => {
+    if (!isMobileOrTablet) return
+    if (!mapRef.current) return
+    if (routeStatus !== 'done' && routeStatus !== 'loading') return
 
-    // 3) If we already have an origin, route effect will handle recalculation automatically
-    //    because its deps include destLat/destLon.
-  }, [destLat, destLon, destName, isMobileOrTablet])
+    // If we just switched destinations, map rendering can lag behind layout changes.
+    // Delay the scroll slightly to ensure Leaflet has a chance to paint tiles + route.
+    const t = setTimeout(() => {
+      mapRef.current?.invalidateSize()
+      containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 120)
+
+    return () => clearTimeout(t)
+  }, [routeStatus, destLat, destLon, isMobileOrTablet])
+
 
 
   // Auto-fetch GPS on mount
