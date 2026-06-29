@@ -43,6 +43,13 @@ export default function Directions() {
   const destLon = parseFloat(params.get('lon'))
   const destName = params.get('name') || 'Destination'
 
+  const isMobileOrTablet =
+    typeof window !== 'undefined' && window.matchMedia
+      ? window.matchMedia('(max-width: 768px)').matches
+      : false
+
+
+
   const [originLat, setOriginLat] = useState('')
   const [originLon, setOriginLon] = useState('')
   const [originLabel, setOriginLabel] = useState('')
@@ -71,17 +78,15 @@ export default function Directions() {
       zoomControl: true,
       attributionControl: true,
     })
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       maxZoom: 19,
     }).addTo(map)
+
     mapRef.current = map
 
-    // Place destination marker
-    destMarkerRef.current = L.marker([destLat, destLon], { icon: destIcon() })
-      .addTo(map)
-      .bindPopup(`<strong>${destName}</strong>`)
-      .openPopup()
+    // Destination marker will be managed by the "dest" effect (so it updates on param changes)
 
     // Use ResizeObserver to invalidate size whenever the container is resized
     // (handles mobile layout shifts, CSS grid reflow, orientation changes)
@@ -109,6 +114,39 @@ export default function Directions() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Update destination marker + (if possible) refresh route/polyline + fit bounds
+  useEffect(() => {
+    if (!mapRef.current) return
+
+    // 1) Update destination marker
+    if (destMarkerRef.current) {
+      destMarkerRef.current.remove()
+      destMarkerRef.current = null
+    }
+
+    destMarkerRef.current = L.marker([destLat, destLon], { icon: destIcon() })
+      .addTo(mapRef.current)
+      .bindPopup(`<strong>${destName}</strong>`)
+      .openPopup()
+
+    // Ensure Leaflet knows container dimensions after the destination change / layout shifts
+    mapRef.current.invalidateSize()
+
+    // 2) Smoothly bring map into view on mobile/tablet (Issue 1)
+    if (isMobileOrTablet) {
+      // Run after DOM paint + CSS layout stabilization
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }, 50)
+      })
+    }
+
+    // 3) If we already have an origin, route effect will handle recalculation automatically
+    //    because its deps include destLat/destLon.
+  }, [destLat, destLon, destName, isMobileOrTablet])
+
 
   // Auto-fetch GPS on mount
   useEffect(() => {
