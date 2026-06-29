@@ -112,9 +112,9 @@ export default function CategoryGrid({
           </p>
         </div>
       ) : (
-        <div style={{
+        <div className="category-cards-grid" style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
           gap: 'var(--space-4)',
         }}>
           {visiblePlaces.map((place, i) => (

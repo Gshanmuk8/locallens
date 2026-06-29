@@ -522,10 +522,6 @@ html, body { overflow-x: hidden; }
   .map-explore { height: 280px !important; }
   .map-detail  { height: 220px !important; }
 }
-@media (max-width: 768px) {
-  button, a { min-height: 44px; }
-  .radius-btn { padding: var(--space-2) var(--space-4) !important; font-size: var(--text-sm) !important; }
-}
 
 /* ═══════════════════════════════════════════
    ANIMATIONS
