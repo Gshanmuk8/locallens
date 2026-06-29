@@ -40,21 +40,37 @@ export async function geocode(query) {
     throw new Error(`No results found for "${query}". Try a different name or be more specific.`)
   }
 
-  return data.map((item) => ({
-    lat: parseFloat(item.lat),
-    lon: parseFloat(item.lon),
-    displayName: item.display_name,
-    shortName:
-      item.address?.city ||
-      item.address?.town ||
-      item.address?.village ||
-      item.address?.county ||
-      item.name ||
-      item.display_name.split(',')[0],
-    type: item.type,
-    boundingbox: item.boundingbox?.map(parseFloat),
-    importance: item.importance,
-  }))
+  return data.map((item) => {
+    const addr = item.address || {}
+
+    // Build a meaningful label: most specific address component first,
+    // then fall back to broader ones. This ensures "HSR Layout" shows as
+    // "HSR Layout" rather than collapsing to "Bengaluru".
+    const specificName =
+      item.name ||                          // exact OSM name of the result
+      addr.neighbourhood ||
+      addr.suburb ||
+      addr.quarter ||
+      addr.hamlet ||
+      addr.village ||
+      addr.town ||
+      addr.city ||
+      addr.county ||
+      item.display_name.split(',')[0]
+
+    // For the controls bar label use the same specific name
+    const shortName = specificName
+
+    return {
+      lat: parseFloat(item.lat),
+      lon: parseFloat(item.lon),
+      displayName: item.display_name,
+      shortName,
+      type: item.type,
+      boundingbox: item.boundingbox?.map(parseFloat),
+      importance: item.importance,
+    }
+  })
 }
 
 /**

@@ -250,6 +250,7 @@ export default function Explore() {
             <MapView
               center={selectedLocation}
               places={allPlaces}
+              searchLocation={selectedLocation}
               zoom={14}
               height="420px"
               style={{ marginBottom: 'var(--space-8)' }}

@@ -800,3 +800,22 @@ html, body { overflow-x: hidden; }
     hyphens: auto;
   }
 }
+
+/* ── Directions map container ── */
+.directions-map-container {
+  /* Desktop height set via inline style on the element */
+  border-radius: var(--radius-lg) !important;
+  overflow: hidden !important;
+}
+@media (max-width: 768px) {
+  .directions-map-container {
+    height: 300px !important;
+    min-height: 240px !important;
+  }
+}
+@media (max-width: 480px) {
+  .directions-map-container {
+    height: 250px !important;
+    min-height: 200px !important;
+  }
+}

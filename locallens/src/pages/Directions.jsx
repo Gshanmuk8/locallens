@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
 import markerIcon from 'leaflet/dist/images/marker-icon.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
@@ -219,8 +218,16 @@ export default function Directions() {
           <div>
             <div
               ref={containerRef}
-              className="directions-map directions-map-container"
-              style={{ width: '100%' }}
+              className="directions-map-container"
+              style={{
+                height: '520px',
+                minHeight: '280px',
+                borderRadius: 'var(--radius-lg)',
+                border: '1.5px solid var(--border)',
+                boxShadow: 'var(--shadow-md)',
+                overflow: 'hidden',
+                width: '100%',
+              }}
             />
             {routeStatus === 'error' && (
               <p style={{
