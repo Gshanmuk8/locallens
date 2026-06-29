@@ -12,9 +12,11 @@ export default function PlaceCard({ place, category, style = {} }) {
   }
 
   const handleDirections = (e) => {
-    e.stopPropagation()
+    // Prevent the parent card navigation from firing
+    e?.stopPropagation?.()
+    e?.preventDefault?.()
+
     if (place.lat && place.lon) {
-      // Navigate to in-app directions page — never leaves the site
       const params = new URLSearchParams({
         lat: place.lat,
         lon: place.lon,
@@ -24,7 +26,9 @@ export default function PlaceCard({ place, category, style = {} }) {
     }
   }
 
+
   return (
+
     <article
       onClick={handleClick}
       tabIndex={0}
@@ -89,8 +93,10 @@ export default function PlaceCard({ place, category, style = {} }) {
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingLeft: 'var(--space-2)', marginTop: 'auto' }}>
         <button
+          onPointerDown={handleDirections}
           onClick={handleDirections}
           aria-label={`Directions to ${place.name}`}
+
           style={{
             fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic',
             fontSize: 'var(--text-sm)', fontWeight: 600,

@@ -83,12 +83,27 @@ export default function Directions() {
       .bindPopup(`<strong>${destName}</strong>`)
       .openPopup()
 
-    // Force Leaflet to recalculate container size after CSS/layout settles.
-    // Critical on mobile where media-query height overrides apply after JS init.
-    const t = setTimeout(() => { map.invalidateSize() }, 300)
+    // Use ResizeObserver to invalidate size whenever the container is resized
+    // (handles mobile layout shifts, CSS grid reflow, orientation changes)
+    const observer = new ResizeObserver(() => {
+      if (mapRef.current) mapRef.current.invalidateSize()
+    })
+    observer.observe(containerRef.current)
+
+    // Also fire immediately after paint to catch initial mobile layout
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (mapRef.current) mapRef.current.invalidateSize()
+      })
+    })
+
+    const t = setTimeout(() => {
+      if (mapRef.current) mapRef.current.invalidateSize()
+    }, 500)
 
     return () => {
       clearTimeout(t)
+      observer.disconnect()
       map.remove()
       mapRef.current = null
     }
