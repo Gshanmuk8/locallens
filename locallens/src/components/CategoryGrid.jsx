@@ -2,23 +2,48 @@ import React from 'react'
 import PlaceCard from './PlaceCard'
 import { getCategoryById } from '../utils/categories'
 
-function SkeletonCard() {
+function SkeletonCard({ color = '#B5124A' }) {
   return (
     <div style={{
       background: 'var(--white)',
-      border: '1.5px solid var(--border)',
+      border: '1px solid var(--border)',
       borderRadius: 'var(--radius-lg)',
       padding: 'var(--space-5)',
+      position: 'relative',
+      overflow: 'hidden',
+      minHeight: '130px',
     }}>
-      <div style={{ display: 'flex', gap: 'var(--space-3)', marginBottom: 'var(--space-3)' }}>
-        <div className="skeleton" style={{ width: '44px', height: '44px', borderRadius: 'var(--radius-md)', flexShrink: 0 }} />
-        <div style={{ flex: 1 }}>
-          <div className="skeleton" style={{ height: '18px', borderRadius: '4px', marginBottom: '8px', width: '80%' }} />
-          <div className="skeleton" style={{ height: '12px', borderRadius: '4px', width: '50%' }} />
+      {/* Left accent stripe matching category */}
+      <div style={{
+        position: 'absolute', left: 0, top: 0, bottom: 0, width: '4px',
+        background: color, opacity: 0.35, borderRadius: '20px 0 0 20px',
+      }} />
+
+      {/* Sweeping shimmer */}
+      <div style={{
+        position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
+        background: 'linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.55) 50%, transparent 70%)',
+        backgroundSize: '250% 100%',
+        animation: 'skeleton-sweep 2s ease-in-out infinite',
+      }} />
+
+      <div style={{ paddingLeft: 'var(--space-2)' }}>
+        {/* Top row: circle + lines */}
+        <div style={{ display: 'flex', gap: 'var(--space-3)', marginBottom: 'var(--space-4)', alignItems: 'flex-start' }}>
+          <div className="skeleton" style={{ width: '46px', height: '46px', borderRadius: '50%', flexShrink: 0 }} />
+          <div style={{ flex: 1, paddingTop: '4px' }}>
+            <div className="skeleton" style={{ height: '9px', borderRadius: '4px', marginBottom: '8px', width: '35%' }} />
+            <div className="skeleton" style={{ height: '17px', borderRadius: '5px', marginBottom: '7px', width: '80%' }} />
+          </div>
+          <div className="skeleton" style={{ width: '48px', height: '20px', borderRadius: '20px', flexShrink: 0, marginTop: '4px' }} />
+        </div>
+        {/* Address line */}
+        <div className="skeleton" style={{ height: '11px', borderRadius: '4px', marginBottom: '16px', width: '65%' }} />
+        {/* Footer */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <div className="skeleton" style={{ height: '13px', borderRadius: '4px', width: '22%' }} />
         </div>
       </div>
-      <div className="skeleton" style={{ height: '12px', borderRadius: '4px', marginBottom: '6px', width: '100%' }} />
-      <div className="skeleton" style={{ height: '12px', borderRadius: '4px', width: '70%' }} />
     </div>
   )
 }
@@ -87,7 +112,7 @@ export default function CategoryGrid({
           gap: 'var(--space-4)',
         }}>
           {Array.from({ length: 3 }).map((_, i) => (
-            <SkeletonCard key={i} />
+            <SkeletonCard key={i} color={category.color} />
           ))}
         </div>
       ) : visiblePlaces.length === 0 ? (

@@ -357,3 +357,53 @@ html, body { overflow-x: hidden; }
 
 /* (rest of file unchanged in repo) */
 
+
+/* ── Directions layout — clean two-column desktop, stacked mobile ── */
+.dir-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: var(--space-6);
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .dir-layout {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  /* Map taller on mobile so it's usable */
+  .dir-map-col > div:first-child {
+    height: 300px !important;
+  }
+}
+@media (max-width: 480px) {
+  .dir-map-col > div:first-child {
+    height: 260px !important;
+  }
+}
+
+/* ── Category cards — single column on small phones ── */
+@media (max-width: 480px) {
+  .category-cards-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Premium skeleton sweep animation ── */
+@keyframes skeleton-sweep {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ── Navbar: show hamburger at 768px ── */
+@media (max-width: 768px) {
+  .navbar-links { display: none !important; }
+  .nav-hamburger { display: flex !important; }
+}
+
+/* ── Landing CTA button — full width on mobile ── */
+@media (max-width: 480px) {
+  .landing-cta-btn {
+    font-size: 1rem !important;
+    padding: 14px var(--space-5) !important;
+  }
+}

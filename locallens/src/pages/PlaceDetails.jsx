@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import MapView from '../components/MapView'
 import { getCategoryById, formatDistance } from '../utils/categories'
 import { safeLoad } from '../utils/storage'
+import PremiumLoading from '../components/PremiumLoading'
 
 function DetailRow({ icon, label, value, href }) {
   if (!value) return null
@@ -133,20 +134,11 @@ export default function PlaceDetails() {
 
   if (!place) {
     return (
-      <div style={{
-        minHeight: 'calc(100vh - 64px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
-        <div style={{
-          fontFamily: 'var(--font-body)',
-          color: 'var(--ink-muted)',
-          fontSize: 'var(--text-base)',
-        }}>
-          Loading…
-        </div>
-      </div>
+      <PremiumLoading
+        variant="center"
+        title="Fetching place details…"
+        subtitle="Curating address, hours, and OpenStreetMap information"
+      />
     )
   }
 

@@ -20,130 +20,179 @@ function distanceMetres(lat1, lon1, lat2, lon2) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
 
-// ── Landing screen (before any GPS decision) ──────────────────────────────────
+// ── Landing screen ────────────────────────────────────────────────────────────
 function Landing({ onEnable, requesting, error }) {
   const navigate = useNavigate()
 
-  // Generate dot grid
-  const dots = Array.from({ length: 25 })
-
   return (
-    <div className="landing-root">
-      {/* ── Left panel — dark atmospheric ── */}
-      <div className="landing-left">
-        <span className="landing-ornament">🗺</span>
+    <div style={{
+      minHeight: 'calc(100vh - 64px)',
+      background: 'linear-gradient(160deg, var(--ink) 0%, #3D0830 55%, #1A0520 100%)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 'var(--space-10) var(--space-6)',
+      position: 'relative',
+      overflow: 'hidden',
+      textAlign: 'center',
+    }}>
+      {/* Atmospheric glows */}
+      <div style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        background: 'radial-gradient(ellipse at 50% 40%, rgba(181,18,74,0.18) 0%, transparent 60%)',
+      }} />
+      <div style={{
+        position: 'absolute', top: '10%', right: '8%',
+        fontSize: '1.8rem', color: 'rgba(181,18,74,0.2)',
+        animation: 'spin-slow 24s linear infinite',
+        pointerEvents: 'none',
+      }}>✦</div>
+      <div style={{
+        position: 'absolute', bottom: '12%', left: '6%',
+        fontSize: '1.2rem', color: 'rgba(106,27,122,0.2)',
+        animation: 'spin-slow 18s linear infinite reverse',
+        pointerEvents: 'none',
+      }}>✦</div>
 
-        <span className="landing-title-accent">Discover the world</span>
-        <h1 className="landing-title">
-          Local<br />Lens
+      {/* Content */}
+      <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '600px' }}>
+
+        {/* Eyebrow */}
+        <p style={{
+          fontFamily: "'Cormorant Garamond', serif",
+          fontStyle: 'italic',
+          fontSize: 'clamp(0.85rem, 2vw, 1.05rem)',
+          color: 'rgba(253,173,194,0.7)',
+          letterSpacing: '0.22em',
+          textTransform: 'uppercase',
+          marginBottom: 'var(--space-4)',
+        }}>
+          🗺 Discover the World
+        </p>
+
+        {/* Big title */}
+        <h1 style={{
+          fontFamily: "'Cinzel Decorative', serif",
+          fontWeight: 900,
+          fontSize: 'clamp(2.8rem, 8vw, 5.5rem)',
+          color: 'var(--white)',
+          letterSpacing: '0.06em',
+          lineHeight: 1.0,
+          marginBottom: 'var(--space-6)',
+        }}>
+          LocalLens
         </h1>
-        <p className="landing-tagline">
+
+        {/* Tagline */}
+        <p style={{
+          fontFamily: "'Cormorant Garamond', serif",
+          fontStyle: 'italic',
+          fontSize: 'clamp(1.05rem, 2.5vw, 1.35rem)',
+          color: 'rgba(255,255,255,0.5)',
+          lineHeight: 1.8,
+          marginBottom: 'clamp(2rem, 5vw, 3.5rem)',
+          maxWidth: '440px',
+          margin: '0 auto clamp(2rem, 5vw, 3.5rem)',
+        }}>
           Every street holds a story.<br />
           What's waiting around the corner?
         </p>
 
-        {/* Dot grid ornament */}
-        <div className="landing-dots">
-          {dots.map((_, i) => <span key={i} />)}
-        </div>
-      </div>
-
-      {/* ── Right panel — actions ── */}
-      <div className="landing-right">
-        <div style={{ width: '100%', maxWidth: '360px' }}>
-          <h2 style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontWeight: 700,
-            fontSize: 'clamp(1.6rem, 3vw, 2.2rem)',
-            color: 'var(--ink)',
-            lineHeight: 1.2,
-            marginBottom: 'var(--space-3)',
-            letterSpacing: '-0.01em',
-          }}>
-            What's near you<br />
-            <em style={{ color: 'var(--gold)', fontStyle: 'italic' }}>right now?</em>
-          </h2>
-
-          <p style={{
+        {/* Error */}
+        {error && (
+          <div style={{
+            background: 'rgba(124,60,47,0.25)',
+            border: '1px solid rgba(253,173,194,0.3)',
+            borderRadius: 'var(--radius-md)',
+            padding: 'var(--space-4)',
+            marginBottom: 'var(--space-5)',
             fontFamily: 'var(--font-body)',
-            fontSize: 'var(--text-base)',
-            color: 'var(--ink-soft)',
-            lineHeight: 1.8,
-            marginBottom: 'var(--space-8)',
-            fontStyle: 'italic',
+            fontSize: 'var(--text-sm)',
+            color: 'rgba(253,173,194,0.9)',
+            textAlign: 'left',
           }}>
-            Restaurants, cafes, theaters, parks — discovered instantly using your GPS. No account, no signup.
-          </p>
-
-          {/* Error */}
-          {error && (
-            <div style={{
-              background: 'var(--terra-pale)',
-              border: '1px solid rgba(124,60,47,0.2)',
-              borderRadius: 'var(--radius-md)',
-              padding: 'var(--space-4)',
-              marginBottom: 'var(--space-5)',
-              fontFamily: 'var(--font-body)',
-              fontSize: 'var(--text-sm)',
-              color: 'var(--terracotta)',
+            ⚠ {error}
+            <button onClick={() => navigate('/explore')} style={{
+              display: 'block', marginTop: 'var(--space-2)',
+              fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)',
+              fontWeight: 600, color: 'rgba(253,173,194,0.9)', background: 'none',
+              border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline',
             }}>
-              ⚠ {error}
-              <button
-                onClick={() => navigate('/explore')}
-                style={{
-                  display: 'block', marginTop: 'var(--space-2)',
-                  fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)',
-                  fontWeight: 600, color: 'var(--sky)', background: 'none',
-                  border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline',
-                }}
-              >
-                Search a location instead →
-              </button>
-            </div>
-          )}
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-            <button
-              onClick={onEnable}
-              disabled={requesting}
-              className="landing-cta-btn landing-cta-primary"
-              onMouseEnter={(e) => {
-                if (!requesting) e.currentTarget.style.transform = 'translateY(-2px)'
-              }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)' }}
-            >
-              {requesting ? '⏳ Getting location…' : '📍 Enable Location'}
+              Search a location instead →
             </button>
+          </div>
+        )}
 
-            <div className="landing-cta-divider">or</div>
+        {/* CTAs */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', alignItems: 'center' }}>
+          <button
+            onClick={onEnable}
+            disabled={requesting}
+            style={{
+              width: '100%', maxWidth: '380px',
+              padding: '16px 32px',
+              background: 'linear-gradient(135deg, var(--gold) 0%, #8B0B3A 100%)',
+              color: 'var(--white)',
+              border: 'none',
+              borderRadius: 'var(--radius-full)',
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: '1.1rem', fontWeight: 700, fontStyle: 'italic',
+              letterSpacing: '0.06em',
+              cursor: requesting ? 'wait' : 'pointer',
+              opacity: requesting ? 0.8 : 1,
+              boxShadow: '0 4px 24px rgba(181,18,74,0.4), inset 0 1px 0 rgba(255,255,255,0.15)',
+              transition: 'all var(--mid) var(--ease)',
+            }}
+            onMouseEnter={(e) => { if (!requesting) e.currentTarget.style.transform = 'translateY(-2px)' }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)' }}
+          >
+            {requesting ? '⏳ Getting location…' : '📍 Enable Location'}
+          </button>
 
-            <Link
-              to="/explore"
-              className="landing-cta-btn landing-cta-secondary"
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'var(--gold)'
-                e.currentTarget.style.boxShadow = 'var(--shadow-gold)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'var(--border)'
-                e.currentTarget.style.boxShadow = 'var(--shadow-sm)'
-              }}
-            >
-              🔍 Explore Anywhere
-            </Link>
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 'var(--space-4)',
+            width: '100%', maxWidth: '380px',
+          }}>
+            <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.12)' }} />
+            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontSize: 'var(--text-xs)', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}>or</span>
+            <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.12)' }} />
           </div>
 
-          <p style={{
-            marginTop: 'var(--space-6)',
-            fontFamily: 'var(--font-body)',
-            fontSize: 'var(--text-xs)',
-            color: 'var(--ink-muted)',
-            fontStyle: 'italic',
-            textAlign: 'center',
-          }}>
-            Your location is never stored or shared.
-          </p>
+          <Link
+            to="/explore"
+            style={{
+              width: '100%', maxWidth: '380px',
+              padding: '14px 32px',
+              background: 'rgba(255,255,255,0.08)',
+              color: 'rgba(255,255,255,0.85)',
+              border: '1px solid rgba(255,255,255,0.2)',
+              borderRadius: 'var(--radius-full)',
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: '1.05rem', fontWeight: 500, fontStyle: 'italic',
+              letterSpacing: '0.06em',
+              textDecoration: 'none',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              transition: 'all var(--mid) var(--ease)',
+              backdropFilter: 'blur(8px)',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.14)'; e.currentTarget.style.borderColor = 'rgba(253,173,194,0.4)' }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)' }}
+          >
+            🔍 Explore Anywhere
+          </Link>
         </div>
+
+        <p style={{
+          marginTop: 'var(--space-6)',
+          fontFamily: "'Cormorant Garamond', serif",
+          fontStyle: 'italic',
+          fontSize: 'var(--text-xs)',
+          color: 'rgba(255,255,255,0.25)',
+          letterSpacing: '0.04em',
+        }}>
+          Your location is never stored or shared.
+        </p>
       </div>
     </div>
   )
@@ -214,22 +263,48 @@ function LocationDenied() {
 // ── Stats bar ─────────────────────────────────────────────────────────────────
 function StatsBar({ placesByCategory }) {
   return (
-    <div className="stats-bar">
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
+      gap: 'var(--space-3)',
+      marginBottom: 'var(--space-10)',
+    }}>
       {CATEGORIES.map((cat) => {
         const count = placesByCategory[cat.id]?.length || 0
         return (
-          <div key={cat.id} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-            <span style={{ fontSize: '16px' }}>{cat.emoji}</span>
+          <div key={cat.id} style={{
+            background: 'var(--white)',
+            border: `1.5px solid ${cat.color}30`,
+            borderRadius: 'var(--radius-lg)',
+            padding: 'var(--space-4) var(--space-4)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 'var(--space-1)',
+            position: 'relative',
+            overflow: 'hidden',
+            boxShadow: 'var(--shadow-sm)',
+          }}>
+            {/* Subtle top accent */}
+            <div style={{
+              position: 'absolute', top: 0, left: 0, right: 0, height: '3px',
+              background: cat.color, opacity: count > 0 ? 0.7 : 0.15,
+            }} />
+            <span style={{ fontSize: '22px', lineHeight: 1 }}>{cat.emoji}</span>
             <span style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: 'var(--text-xs)',
+              fontFamily: "'Cinzel Decorative', serif",
+              fontSize: count > 0 ? 'var(--text-lg)' : 'var(--text-base)',
               fontWeight: 700,
-              color: cat.color,
+              color: count > 0 ? cat.color : 'var(--ink-muted)',
+              lineHeight: 1,
             }}>{count}</span>
             <span style={{
-              fontFamily: 'var(--font-body)',
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: 'italic',
               fontSize: 'var(--text-xs)',
-              color: 'var(--ink-soft)',
+              color: 'var(--ink-muted)',
+              textAlign: 'center',
+              letterSpacing: '0.02em',
             }}>{cat.plural}</span>
           </div>
         )
