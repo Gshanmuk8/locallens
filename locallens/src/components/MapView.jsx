@@ -83,7 +83,16 @@ export default function MapView({
       maxZoom: 19,
     }).addTo(map)
     mapRef.current = map
-    return () => { map.remove(); mapRef.current = null }
+
+    // Force size recalculation after CSS media queries settle on mobile.
+    // Without this, maps initialised inside CSS-height containers render blank.
+    const t = setTimeout(() => { map.invalidateSize() }, 250)
+
+    return () => {
+      clearTimeout(t)
+      map.remove()
+      mapRef.current = null
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

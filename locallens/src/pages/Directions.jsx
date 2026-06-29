@@ -83,7 +83,15 @@ export default function Directions() {
       .bindPopup(`<strong>${destName}</strong>`)
       .openPopup()
 
-    return () => { map.remove(); mapRef.current = null }
+    // Force Leaflet to recalculate container size after CSS/layout settles.
+    // Critical on mobile where media-query height overrides apply after JS init.
+    const t = setTimeout(() => { map.invalidateSize() }, 300)
+
+    return () => {
+      clearTimeout(t)
+      map.remove()
+      mapRef.current = null
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
