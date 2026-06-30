@@ -27,43 +27,43 @@ function Landing({ onEnable, requesting, error }) {
   return (
     <div style={{
       minHeight: 'calc(100vh - 64px)',
-      background: 'linear-gradient(160deg, var(--ink) 0%, #3D0830 55%, #1A0520 100%)',
+      background: 'linear-gradient(160deg, var(--ink) 0%, #4A0B3B 45%, #1A0520 100%)',
       display: 'flex',
       flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
+      alignItems: 'flex-end',
+      justifyContent: 'flex-start',
       padding: 'var(--space-10) var(--space-6)',
       position: 'relative',
       overflow: 'hidden',
-      textAlign: 'center',
+      textAlign: 'right',
     }}>
       {/* Atmospheric glows */}
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: 'radial-gradient(ellipse at 50% 40%, rgba(181,18,74,0.18) 0%, transparent 60%)',
+        background: 'radial-gradient(ellipse at 55% 35%, rgba(245,45,120,0.22) 0%, transparent 60%), radial-gradient(ellipse at 20% 70%, rgba(181,18,74,0.14) 0%, transparent 55%)',
       }} />
       <div style={{
-        position: 'absolute', top: '10%', right: '8%',
-        fontSize: '1.8rem', color: 'rgba(181,18,74,0.2)',
+        position: 'absolute', top: '9%', right: '7%',
+        fontSize: '1.8rem', color: 'rgba(181,18,74,0.26)',
         animation: 'spin-slow 24s linear infinite',
         pointerEvents: 'none',
       }}>✦</div>
       <div style={{
         position: 'absolute', bottom: '12%', left: '6%',
-        fontSize: '1.2rem', color: 'rgba(106,27,122,0.2)',
+        fontSize: '1.2rem', color: 'rgba(106,27,122,0.16)',
         animation: 'spin-slow 18s linear infinite reverse',
         pointerEvents: 'none',
       }}>✦</div>
 
       {/* Content */}
-      <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '600px' }}>
+      <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '720px', alignSelf: 'flex-end' }}>
 
         {/* Eyebrow */}
         <p style={{
           fontFamily: "'Cormorant Garamond', serif",
           fontStyle: 'italic',
           fontSize: 'clamp(0.85rem, 2vw, 1.05rem)',
-          color: 'rgba(253,173,194,0.7)',
+          color: 'rgba(253,173,194,0.85)',
           letterSpacing: '0.22em',
           textTransform: 'uppercase',
           marginBottom: 'var(--space-4)',
@@ -75,11 +75,11 @@ function Landing({ onEnable, requesting, error }) {
         <h1 style={{
           fontFamily: "'Cinzel Decorative', serif",
           fontWeight: 900,
-          fontSize: 'clamp(2.8rem, 8vw, 5.5rem)',
+          fontSize: 'clamp(2.6rem, 7.5vw, 5.2rem)',
           color: 'var(--white)',
           letterSpacing: '0.06em',
           lineHeight: 1.0,
-          marginBottom: 'var(--space-6)',
+          marginBottom: 'var(--space-5)',
         }}>
           LocalLens
         </h1>
@@ -89,11 +89,12 @@ function Landing({ onEnable, requesting, error }) {
           fontFamily: "'Cormorant Garamond', serif",
           fontStyle: 'italic',
           fontSize: 'clamp(1.05rem, 2.5vw, 1.35rem)',
-          color: 'rgba(255,255,255,0.5)',
+          color: 'rgba(255,255,255,0.58)',
           lineHeight: 1.8,
           marginBottom: 'clamp(2rem, 5vw, 3.5rem)',
-          maxWidth: '440px',
-          margin: '0 auto clamp(2rem, 5vw, 3.5rem)',
+          maxWidth: '520px',
+          marginLeft: 'auto',
+          marginRight: 0,
         }}>
           Every street holds a story.<br />
           What's waiting around the corner?
@@ -125,7 +126,7 @@ function Landing({ onEnable, requesting, error }) {
         )}
 
         {/* CTAs */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', alignItems: 'center' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', alignItems: 'flex-end' }}>
           <button
             onClick={onEnable}
             disabled={requesting}
