@@ -1,19 +1,9 @@
-# TODO — Mobile Map Layout Fix
+# TODO (LocalLens UI fixes)
 
-- [x] Refactor `Directions.jsx` so the map is full-bleed on screens <768px:
-  - [x] Map becomes primary layer (width: 100vw; responsive height under header)
-  - [x] Remove fixed map heights and constrained grid layout
-  - [x] Cards/panels become absolute/fixed overlays
-  - [ ] Keep overlays inside safe viewport boundaries
-  - [x] Trigger Leaflet `invalidateSize()` after layout changes
-
-- [ ] Update `locallens/src/index.css` with mobile-only classes/rules for the new overlay layout
-  - [ ] Ensure overflow-x is hidden for the directions page
-  - [ ] Remove any conflicting fixed-height directions rules
-- [ ] Smoke test:
-  - [ ] Open Directions page on mobile viewport and verify:
-    - [ ] Full-width map (no clipped left/right)
-    - [ ] No horizontal scrolling
-    - [ ] Floating cards overlay map
-    - [ ] Zoom/pan tiles render and pan smoothly
+- [ ] Fix navigation UI premium + prevent mobile "scroll to bottom" when clicking Directions
+- [ ] Add missing Italian fonts for: enabling location and explore location loading states
+- [ ] Ensure restaurant/shopping malls listing/loading states never change during route transitions (no layout shift)
+- [ ] Implement waiting/loading (1–2 min) message behavior where needed using PremiumLoading
+- [ ] Verify Directions mobile layout: route panel should not jump to bottom; ensure proper scroll anchoring on route navigation
+- [ ] Regression-test Explore, PlaceDetails, Directions, and PlaceCard directions button
 

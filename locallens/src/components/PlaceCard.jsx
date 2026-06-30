@@ -22,7 +22,9 @@ export default function PlaceCard({ place, category, style = {} }) {
         lon: place.lon,
         name: place.name,
       })
-      navigate(`/directions?${params.toString()}`)
+      // Prevent scroll-to-bottom on some mobile browsers
+      window.scrollTo({ top: 0, behavior: 'instant' })
+      navigate(`/directions?${params.toString()}`, { state: { fromCard: true } })
     }
   }
 

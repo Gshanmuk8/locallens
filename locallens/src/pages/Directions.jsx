@@ -6,7 +6,6 @@ import markerIcon from 'leaflet/dist/images/marker-icon.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
 import { getCurrentLocation } from '../services/location'
 import { geocode } from '../services/nominatim'
-import PremiumLoading from '../components/PremiumLoading'
 
 delete L.Icon.Default.prototype._getIconUrl
 L.Icon.Default.mergeOptions({ iconUrl: markerIcon, iconRetinaUrl: markerIcon2x, shadowUrl: markerShadow })
@@ -88,7 +87,14 @@ export default function Directions() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Avoid default scroll restoration jump when arriving from a place card.
+  useEffect(() => {
+    // react-router may restore previous scroll; we want the top of this page.
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [])
+
   useEffect(() => { handleUseMyLocation() }, []) // eslint-disable-line
+
 
   const handleUseMyLocation = async () => {
     setGpsLoading(true); setGpsError(null)
@@ -179,17 +185,14 @@ export default function Directions() {
       <div className="page-container" style={{ paddingTop: 'var(--space-4)', paddingBottom: 'var(--space-12)' }}>
         <div className="dir-layout">
 
-          {/* Map */}
-          <div className="dir-map-col">
+          {/* Map — on mobile shows AFTER controls via CSS order */}
+          <div className="dir-map-col" style={{ order: 2 }}>
             <div
               ref={containerRef}
               style={{
-                height: '360px',
-                width: '100%',
-                borderRadius: 'var(--radius-lg)',
-                border: '1.5px solid var(--border)',
-                boxShadow: 'var(--shadow-md)',
-                overflow: 'hidden',
+                height: '360px', width: '100%',
+                borderRadius: 'var(--radius-lg)', border: '1.5px solid var(--border)',
+                boxShadow: 'var(--shadow-md)', overflow: 'hidden',
               }}
             />
             {routeStatus === 'error' && (
@@ -199,16 +202,26 @@ export default function Directions() {
             )}
           </div>
 
-          {/* Controls */}
-          <div className="dir-controls-col" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+          {/* Controls — on mobile shows FIRST via CSS order */}
+          <div className="dir-controls-col" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)', order: 1 }}>
 
             {routeStatus === 'loading' && (
-              <PremiumLoading
-                variant="panel"
-                title="Calculating route…"
-                subtitle="Curating drive path and timing"
-                count={1}
-              />
+              <div style={{
+                background: 'var(--white)', borderRadius: 'var(--radius-lg)',
+                padding: 'var(--space-5)', border: '1px solid var(--border)',
+                boxShadow: 'var(--shadow-sm)', textAlign: 'center',
+              }}>
+                <p style={{
+                  fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic',
+                  fontSize: 'var(--text-base)', color: 'var(--ink-soft)',
+                  lineHeight: 1.8,
+                }}>
+                  🗺 Curating your route…<br />
+                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-muted)' }}>
+                    This can take a moment. Please wait.
+                  </span>
+                </p>
+              </div>
             )}
 
             {routeStatus === 'done' && routeInfo && (

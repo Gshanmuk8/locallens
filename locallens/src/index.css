@@ -390,8 +390,8 @@ html, body { overflow-x: hidden; }
 
 /* ── Premium skeleton sweep animation ── */
 @keyframes skeleton-sweep {
-  0%   { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
 }
 
 /* ── Navbar: show hamburger at 768px ── */
@@ -406,4 +406,43 @@ html, body { overflow-x: hidden; }
     font-size: 1rem !important;
     padding: 14px var(--space-5) !important;
   }
+}
+
+/* ── Scroll anchoring fixes (premium mobile feel) ── */
+html { scroll-padding-top: 88px; }
+
+/* Ensure route changes land at top instead of jumping to bottom */
+main { scroll-snap-align: start; }
+
+/* ── Skeleton loader — premium moving shimmer ── */
+.skeleton {
+
+  position: relative;
+  overflow: hidden;
+  background: var(--parchment);
+  border-radius: var(--radius-sm);
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.7) 40%,
+    rgba(255, 255, 255, 0.85) 50%,
+    rgba(255, 255, 255, 0.7) 60%,
+    transparent 100%
+  );
+  background-size: 300% 100%;
+  animation: shimmer-move 1.8s linear infinite;
+}
+@keyframes shimmer-move {
+  0%   { background-position: 120% center; }
+  100% { background-position: -120% center; }
+}
+/* Keep sweep for the overlay shimmer on skeleton cards */
+@keyframes skeleton-sweep {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
 }
