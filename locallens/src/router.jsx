@@ -1,5 +1,5 @@
-import React from 'react'
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -59,10 +59,21 @@ function PageLayout({ children }) {
   )
 }
 
+function ScrollToTopOnRouteChange() {
+  const location = useLocation()
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [location.pathname])
+
+  return null
+}
+
 export default function Router() {
   return (
     <BrowserRouter>
       <Navbar />
+      <ScrollToTopOnRouteChange />
       <Routes>
         <Route path="/" element={<PageLayout><Home /></PageLayout>} />
         <Route path="/explore" element={<PageLayout><Explore /></PageLayout>} />
